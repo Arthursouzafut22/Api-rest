@@ -24,7 +24,7 @@ app.get("/", (req, res) => {
 
 // Rota para listar todos os dados de atacado
 app.get("/atacado", (req, res) => {
-  const sql = "SELECT * FROM atacado;";
+  const sql = "SELECT * FROM atacado WHERE tipo = 'atacado';";
 
   conexao.query(sql, (erro, resultado) => {
     if (erro) {
@@ -35,9 +35,17 @@ app.get("/atacado", (req, res) => {
   });
 });
 
-// Rota para líquidos (vazia por enquanto)
+// Rota para listar todos os dados de liquidos
 app.get("/liquidos", (req, res) => {
-  res.status(200).send();
+  const sql = "SELECT * FROM atacado WHERE tipo = 'liquido';";
+
+  conexao.query(sql, (erro, resultado) => {
+    if (erro) {
+      res.status(404).json({ erro: erro });
+    } else {
+      res.status(200).json(resultado);
+    }
+  });
 });
 
 const PORT = 3000;
