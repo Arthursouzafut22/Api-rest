@@ -22,6 +22,19 @@ app.get("/", (req, res) => {
   });
 });
 
+// Rota para listar todos produtos
+app.get("/products", (req, res) => {
+  const sql = "SELECT * FROM atacado;";
+
+  conexao.query(sql, (erro, resultado) => {
+    if (erro) {
+      res.status(404).json({ erro: erro });
+    } else {
+      res.status(200).json(resultado);
+    }
+  });
+});
+
 // Rota para listar todos os dados de atacado
 app.get("/atacado", (req, res) => {
   const sql = "SELECT * FROM atacado WHERE tipo = 'atacado';";
