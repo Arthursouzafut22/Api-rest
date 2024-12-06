@@ -8,5 +8,4 @@ const conexao = mysql.createConnection({
   database: "dbatacado",
 });
 
-
 export default conexao;

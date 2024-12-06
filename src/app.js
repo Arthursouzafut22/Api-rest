@@ -30,7 +30,11 @@ app.get("/products", (req, res) => {
     if (erro) {
       res.status(404).json({ erro: erro });
     } else {
-      res.status(200).json(resultado);
+      const produtos = resultado.map((produto) => ({
+        ...produto,
+        sabores: produto.sabores ? JSON.parse(produto.sabores) : [],
+      }));
+      res.status(200).json(produtos);
     }
   });
 });
@@ -43,7 +47,11 @@ app.get("/atacado", (req, res) => {
     if (erro) {
       res.status(404).json({ erro: erro });
     } else {
-      res.status(200).json(resultado);
+      const produtos = resultado.map((produto) => ({
+        ...produto,
+        sabores: produto.sabores ? JSON.parse(produto.sabores) : [],
+      }));
+      res.status(200).json(produtos);
     }
   });
 });
@@ -56,7 +64,11 @@ app.get("/liquidos", (req, res) => {
     if (erro) {
       res.status(404).json({ erro: erro });
     } else {
-      res.status(200).json(resultado);
+      const produtos = resultado.map((produto) => ({
+        ...produto,
+        sabores: produto.sabores ? JSON.parse(produto.sabores) : [],
+      }));
+      res.status(200).json(produtos);
     }
   });
 });
