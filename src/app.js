@@ -6,72 +6,49 @@ import path from "path";
 export const app = express();
 app.use(cors());
 
-// Configuração para servir arquivos estáticos da pasta imgs/imsPods
+// Configuração para servir arquivos estáticos
 app.use("/images", express.static(path.resolve("imgs/imsPods")));
 
-// Rota para exibir "Ok" e listar imagens no index
-app.get("/", (req, res) => {
-  const sql = "SELECT imagem FROM atacado;";
-
+// Função genérica para processar consultas ao banco
+const executarConsulta = (sql, res) => {
   conexao.query(sql, (erro, resultados) => {
     if (erro) {
-      res.status(500).json({ erro: "Erro ao buscar imagens." });
+      res.status(500).json({ erro: "Erro ao realizar a consulta." });
     } else {
-      res.status(200);
+      const produtos = resultados.map((produto) => ({
+        ...produto,
+        imagem: produto.imagem ? JSON.parse(produto.imagem) : [],
+        sabores: produto.sabores ? JSON.parse(produto.sabores) : [],
+      }));
+      res.status(200).json(produtos);
     }
   });
+};
+
+// Rota para exibir imagens
+app.get("/images", (req, res) => {
+  const sql = "SELECT imagem FROM atacado;";
+  executarConsulta(sql, res);
 });
 
-// Rota para listar todos produtos
+// Rota para listar todos os produtos
 app.get("/products", (req, res) => {
   const sql = "SELECT * FROM atacado;";
-
-  conexao.query(sql, (erro, resultado) => {
-    if (erro) {
-      res.status(404).json({ erro: erro });
-    } else {
-      const produtos = resultado.map((produto) => ({
-        ...produto,
-        sabores: produto.sabores ? JSON.parse(produto.sabores) : [],
-      }));
-      res.status(200).json(produtos);
-    }
-  });
+  executarConsulta(sql, res);
 });
 
-// Rota para listar todos os dados de atacado
-app.get("/atacado", (req, res) => {
-  const sql = "SELECT * FROM atacado WHERE tipo = 'atacado';";
+// Rota para listar produtos por tipo
+app.get("/:tipo", (req, res) => {
+  const { tipo } = req.params;
+  const tiposPermitidos = ["atacado", "liquido", "vendidos"];
 
-  conexao.query(sql, (erro, resultado) => {
-    if (erro) {
-      res.status(404).json({ erro: erro });
-    } else {
-      const produtos = resultado.map((produto) => ({
-        ...produto,
-        sabores: produto.sabores ? JSON.parse(produto.sabores) : [],
-      }));
-      res.status(200).json(produtos);
-    }
-  });
-});
+  if (!tiposPermitidos.includes(tipo)) {
+    return res.status(400).json({ erro: "Tipo inválido." });
+  }
 
-// Rota para listar todos os dados de liquidos
-app.get("/liquidos", (req, res) => {
-  const sql = "SELECT * FROM atacado WHERE tipo = 'liquido';";
-
-  conexao.query(sql, (erro, resultado) => {
-    if (erro) {
-      res.status(404).json({ erro: erro });
-    } else {
-      const produtos = resultado.map((produto) => ({
-        ...produto,
-        sabores: produto.sabores ? JSON.parse(produto.sabores) : [],
-      }));
-      res.status(200).json(produtos);
-    }
-  });
+  const sql = `SELECT * FROM atacado WHERE tipo = '${tipo}';`;
+  executarConsulta(sql, res);
 });
 
 const PORT = 3000;
-app.listen(PORT, () => console.log("servidor rodando"));
+app.listen(PORT, () => console.log(`servidor rodando na porta ${PORT}`));
