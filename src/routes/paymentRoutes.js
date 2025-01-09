@@ -41,7 +41,7 @@ router.post("/payment", async (req, res) => {
             amount: {
               value: amount || 40,
             },
-            expiration_date: "2025-01-09T12:00:00-03:00",
+            expiration_date: "2025-01-12T12:00:00-03:00",
           },
         ],
         shipping: {
