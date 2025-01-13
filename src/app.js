@@ -9,7 +9,15 @@ import imagesRoutes from "./routes/imagesRoutes.js";
 dotenv.config();
 export const app = express();
 app.use(express.json());
-app.use(cors());
+// app.use(cors());
+const corsOptions = {
+  origin: ["https://vape-shop-sbjz.vercel.app/"], // Substitua pela URL do seu frontend
+  methods: ["GET", "POST", "PUT", "DELETE"], // Métodos HTTP permitidos
+  allowedHeaders: ["Content-Type", "Authorization"], // Cabeçalhos permitidos
+};
+
+app.use(cors(corsOptions));
+
 app.use(productTypeRoutes);
 app.use(paymentRoutes);
 app.use(imagesRoutes);
