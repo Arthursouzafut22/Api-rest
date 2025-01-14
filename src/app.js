@@ -10,6 +10,7 @@ dotenv.config();
 export const app = express();
 app.use(express.json());
 // app.use(cors());
+
 const corsOptions = {
   origin: ["https://vape-shop-sbjz.vercel.app/"], // Substitua pela URL do seu frontend
   methods: ["GET", "POST", "PUT", "DELETE"], // Métodos HTTP permitidos
